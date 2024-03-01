@@ -39,3 +39,7 @@ def llf_complexity(X_pre, y_pre, coef=None, a_n=None, include_bias=False):
 
     return llf, complexities, icomps
 
+def icomp_ic(llf, complexities, a_n):
+    icomp = -2*llf+2*a_n*complexities
+    return icomp, np.argmin(icomp)
+
