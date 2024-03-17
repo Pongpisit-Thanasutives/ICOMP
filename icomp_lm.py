@@ -2,14 +2,15 @@ import numpy as np
 import statsmodels.api as sm
 # Implemented by Pongpisit Thanasutives in 2024
 
-def llf_complexity(X_pre, y_pre, coef=None, a_n=None, include_bias=False):
+# beta = coefficients
+def llf_complexity(X_pre, y_pre, beta=None, a_n=None, include_bias=False):
     N = len(y_pre)
     if a_n is None:
         a_n = np.log(N)
 
     if include_bias:
         X_pre = sm.add_constant(X_pre)
-    if coef is None:
+    if beta is None:
         model = sm.OLS(y_pre, X_pre)
         m_res = model.fit()
         q = model.rank
@@ -17,6 +18,7 @@ def llf_complexity(X_pre, y_pre, coef=None, a_n=None, include_bias=False):
         S_inv = m_res.cov_params(scale=1)
         llf = m_res.llf
     else:
+        beta = beta.reshape(X_pre.shape[-1], 1)
         q = np.linalg.matrix_rank(X_pre)
         rss = np.sum((y_pre-X_pre@beta)**2)
         S_inv = np.linalg.inv(X_pre.T@X_pre)
